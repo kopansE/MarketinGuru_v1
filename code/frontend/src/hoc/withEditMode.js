@@ -1,37 +1,51 @@
+// src/hoc/withEditMode.js
 import React, { useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
-export const withEditMode = (WrappedComponent) => {
-  return (props) => {
-    const [isEditing, setIsEditing] = useState(false);
+export const withEditMode = (WrappedComponent, componentType) => {
+  return ({ initialTemplate, ...props }) => {
+    const [currentTemplate, setCurrentTemplate] = useState(
+      initialTemplate || null
+    );
     const [componentText, setComponentText] = useState({
       title: props.title || "",
       description: props.description || "",
     });
 
-    // Drag and drop configuration
+    // Drag configuration
     const [{ isDragging }, drag] = useDrag({
       type: "COMPONENT",
       item: {
-        type: "COMPONENT",
-        component: WrappedComponent,
-        props: componentText,
+        type: componentType, // This is the component type (NAVBAR, HERO, etc.)
+        currentTemplate,
       },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
     });
 
-    const [{ isOver }, drop] = useDrop({
+    // Drop configuration
+    const [{ isOver, canDrop }, drop] = useDrop({
       accept: "COMPONENT",
-      drop: (item, monitor) => {
-        // Handle component replacement logic here
-        console.log("Dropped component:", item);
+      canDrop: (item) => item.type === componentType, // Only allow drops if types match
+      drop: (item) => {
+        console.log("Dropped template:", item.template);
+        if (item.template) {
+          setCurrentTemplate(item.template);
+          // Reset text when switching templates
+          setComponentText({
+            title: item.template.defaultProps?.title || "",
+            description: item.template.defaultProps?.description || "",
+          });
+        }
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop(),
       }),
     });
+
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () => {
       setIsEditing(!isEditing);
@@ -45,15 +59,37 @@ export const withEditMode = (WrappedComponent) => {
       }));
     };
 
-    // Wrap the component with edit functionality
+    // Define border color based on drag and drop state
+    const getBorderColor = () => {
+      if (isOver) {
+        return canDrop ? "#4CAF50" : "#f44336"; // Green if can drop, red if cannot
+      }
+      return "#ddd";
+    };
+
+    // Combine drag and drop refs
+    const combineRefs = (...refs) => {
+      return (element) => {
+        refs.forEach((ref) => {
+          if (typeof ref === "function") {
+            ref(element);
+          } else if (ref) {
+            ref.current = element;
+          }
+        });
+      };
+    };
+
     return (
       <div
-        ref={drop}
+        ref={combineRefs(drag, drop)}
         style={{
           margin: "20px",
           padding: "20px",
-          border: isOver ? "2px dashed blue" : "1px solid #ddd",
+          border: `2px solid ${getBorderColor()}`,
           opacity: isDragging ? 0.5 : 1,
+          background: isOver && canDrop ? "rgba(76, 175, 80, 0.1)" : "white",
+          transition: "all 0.3s ease",
         }}
       >
         {isEditing ? (
@@ -73,7 +109,11 @@ export const withEditMode = (WrappedComponent) => {
               style={{ width: "100%", marginBottom: "10px" }}
             />
           </div>
+        ) : currentTemplate ? (
+          // Render the selected template with current text
+          <currentTemplate.component {...componentText} />
         ) : (
+          // Render the original component if no template is selected
           <WrappedComponent {...props} {...componentText} />
         )}
 
@@ -84,16 +124,6 @@ export const withEditMode = (WrappedComponent) => {
             marginTop: "10px",
           }}
         >
-          <button
-            ref={drag}
-            style={{
-              padding: "5px 10px",
-              background: "#f0f0f0",
-              border: "1px solid #ddd",
-            }}
-          >
-            Drag
-          </button>
           <button
             onClick={handleEdit}
             style={{
