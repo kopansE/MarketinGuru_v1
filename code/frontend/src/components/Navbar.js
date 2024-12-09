@@ -1,25 +1,25 @@
 import React from "react";
-
-// Button component
-function Button({ children, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        backgroundColor: "#007FFF",
-        color: "#fff",
-        padding: "0.5rem 1rem",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        fontSize: "1rem",
-        marginLeft: "auto", // Align the button to the right
-      }}
-    >
-      {children}
-    </button>
-  );
-}
+import { Button } from "./Button";
+// // Button component
+// function Button({ children, onClick }) {
+//   return (
+//     <button
+//       onClick={onClick}
+//       style={{
+//         backgroundColor: "#007FFF",
+//         color: "#fff",
+//         padding: "0.5rem 1rem",
+//         border: "none",
+//         borderRadius: "5px",
+//         cursor: "pointer",
+//         fontSize: "1rem",
+//         marginLeft: "auto", // Align the button to the right
+//       }}
+//     >
+//       {children}
+//     </button>
+//   );
+// }
 
 // Navbar component
 const Navbar = () => (
