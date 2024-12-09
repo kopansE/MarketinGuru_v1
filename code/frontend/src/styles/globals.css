@@ -5,4 +5,9 @@ body {
     background: #f8f9fa;
     color: #333;
   }
-  
+  /* Add a border and margin to all child elements */
+.component-wrapper > * {
+  border: 2px dashed gray;
+  margin: 10px;
+  padding: 10px;
+}
