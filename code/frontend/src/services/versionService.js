@@ -3,12 +3,33 @@ const API_URL = "http://localhost:5000/api";
 export const versionService = {
   async saveVersion(components) {
     try {
+      // Strip out React components before sending to backend
+      const preparedComponents = Object.entries(components).reduce(
+        (acc, [key, value]) => {
+          if (!value) return acc;
+
+          acc[key] = {
+            template: value.template
+              ? {
+                  label: value.template.label,
+                  type: value.type,
+                }
+              : null,
+            text: value.text,
+            type: value.type,
+          };
+
+          return acc;
+        },
+        {}
+      );
+
       const response = await fetch(`${API_URL}/versions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ components }),
+        body: JSON.stringify({ components: preparedComponents }),
       });
 
       if (!response.ok) {

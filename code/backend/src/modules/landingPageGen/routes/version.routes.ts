@@ -1,5 +1,5 @@
 import express from 'express';
-import { VersionController } from '../controllers/version.controller';
+import { VersionController } from '../version.controller';
 
 const router = express.Router();
 
@@ -119,9 +119,6 @@ const router = express.Router();
  *                     type: string
  */
 
-router.get('/', VersionController.getAllVersions);
 router.get('/:versionNumber', VersionController.getVersion);
 router.post('/', VersionController.createVersion);
-router.post('/pages', VersionController.savePage);
-router.get('/pages', VersionController.getAllPages);
 export { router as versionRoutes };

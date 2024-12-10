@@ -1,9 +1,9 @@
 // src/hoc/withEditMode.js
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
 export const withEditMode = (WrappedComponent, componentType) => {
-  return ({ initialTemplate, ...props }) => {
+  const Component = React.forwardRef(({ initialTemplate, ...props }, ref) => {
     const [currentTemplate, setCurrentTemplate] = useState(
       initialTemplate || null
     );
@@ -11,6 +11,49 @@ export const withEditMode = (WrappedComponent, componentType) => {
       title: props.title || "",
       description: props.description || "",
     });
+
+    // Debug the component state when it changes
+    React.useEffect(() => {
+      console.log(`${componentType} state updated:`, {
+        template: currentTemplate,
+        text: componentText,
+      });
+    }, [currentTemplate, componentText]);
+
+    // Expose state and methods through ref
+    useImperativeHandle(
+      ref,
+      () => ({
+        getState: () => {
+          const state = {
+            template: currentTemplate && {
+              label: currentTemplate.label,
+              type: componentType,
+            },
+            text: componentText,
+            type: componentType,
+          };
+          console.log(`${componentType} getState called:`, state);
+          return state;
+        },
+        setState: (state) => {
+          console.log(`${componentType} setState called with:`, state);
+          if (state?.template) {
+            // Find the matching template from your template library
+            const templateLibrary = window.templateLibrary?.[componentType];
+            if (templateLibrary?.templates) {
+              const fullTemplate = templateLibrary.templates.find(
+                (t) => t.label === state.template.label
+              );
+              setCurrentTemplate(fullTemplate || null);
+            }
+          }
+
+          if (state.text) setComponentText(state.text);
+        },
+      }),
+      [currentTemplate, componentText]
+    );
 
     // Drag configuration
     const [{ isDragging }, drag] = useDrag({
@@ -138,5 +181,9 @@ export const withEditMode = (WrappedComponent, componentType) => {
         </div>
       </div>
     );
-  };
+  });
+  Component.displayName = `withEditMode(${
+    WrappedComponent.displayName || WrappedComponent.name || "Component"
+  })`;
+  return Component;
 };

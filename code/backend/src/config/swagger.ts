@@ -15,7 +15,7 @@ const swaggerOptions: Options = {
       }
     ],
   },
-  apis: ['./src/modules/version-management/routes/*.ts'] // files containing annotations as per OpenAPI Specification
+  apis: ['./src/modules/landingPageGen/routes/*.ts'] // files containing annotations as per OpenAPI Specification
 };
 
 export default swaggerOptions;

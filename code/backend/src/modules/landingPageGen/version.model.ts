@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { IVersion } from '../types/version.types';
+import { IVersion } from './types/version.types';
 
 export interface IVersionDocument extends IVersion, Document {}
 
 const VersionSchema = new Schema({
-  versionNumber: {
+  versionNumber: { 
     type: Number,
     required: true,
     unique: true
@@ -32,3 +32,5 @@ const VersionSchema = new Schema({
 });
 
 export const Version = mongoose.model<IVersionDocument>('Version', VersionSchema);
+
+

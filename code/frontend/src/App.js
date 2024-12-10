@@ -14,7 +14,7 @@ function App() {
         <DndProvider backend={HTML5Backend}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/v:versionId" element={<LandingPage />} />
+            <Route path="/v/:versionId" element={<LandingPage />} />
           </Routes>
         </DndProvider>
       </VersionProvider>
