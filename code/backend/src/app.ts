@@ -15,7 +15,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Your frontend URL
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Swagger setup
@@ -26,7 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/versions', versionRoutes);
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/marketinguru';
+const MONGODB_URI = process.env.MONGODB_URI || '';
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))

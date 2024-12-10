@@ -1,6 +1,4 @@
-// src/config/swagger.ts
 import { Options } from 'swagger-jsdoc';
-import path from 'path';
 
 const swaggerOptions: Options = {
   definition: {
@@ -8,16 +6,16 @@ const swaggerOptions: Options = {
     info: {
       title: 'Landing Page Version Management API',
       version: '1.0.0',
-      description: 'API endpoints for managing landing page versions',
+      description: 'API endpoints for managing landing page versions'
     },
     servers: [
       {
-        url: 'http://localhost:5000',
-        description: 'Development server',
-      },
+        url: '/api',
+        description: 'Local Development API'
+      }
     ],
   },
-  apis: [path.join(__dirname, '../modules/version-management/routes/*.ts')], // Updated path
+  apis: ['./src/modules/landingPageGen/routes/*.ts'] // files containing annotations as per OpenAPI Specification
 };
 
 export default swaggerOptions;

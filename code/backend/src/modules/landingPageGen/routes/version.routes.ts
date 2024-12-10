@@ -1,98 +1,41 @@
-// src/modules/version-management/routes/version.routes.ts
 import express from 'express';
-import { VersionController } from '../controllers/version.controller';
+import { VersionController } from '../version.controller';
 
 const router = express.Router();
 
 /**
- * @swagger
- * components:
- *   schemas:
- *     ComponentState:
- *       type: object
- *       properties:
- *         template:
- *           type: object
- *         text:
- *           type: object
- *           properties:
- *             title:
- *               type: string
- *             description:
- *               type: string
- *         type:
- *           type: string
- *     Version:
- *       type: object
- *       properties:
- *         versionNumber:
- *           type: number
- *         components:
- *           type: object
- *           properties:
- *             navbar:
- *               $ref: '#/components/schemas/ComponentState'
- *             hero:
- *               $ref: '#/components/schemas/ComponentState'
- *             features:
- *               $ref: '#/components/schemas/ComponentState'
- *             contactForm:
- *               $ref: '#/components/schemas/ComponentState'
- *             footer:
- *               $ref: '#/components/schemas/ComponentState'
- *         timestamp:
- *           type: string
- *           format: date-time
- *         url:
- *           type: string
- */
-
-/**
- * @swagger
+ * @openapi
+ * tags:
+ *   name: Versions
+ *   description: API endpoints for managing landing page versions
+ * 
  * /api/versions:
  *   get:
+ *     tags: [Versions]
  *     summary: Get all versions
+ *     description: Retrieve all saved landing page versions
  *     responses:
  *       200:
- *         description: List of all versions
+ *         description: A list of landing page versions
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Version'
- */
-router.get('/', VersionController.getAllVersions);
-
-/**
- * @swagger
- * /api/versions/{versionNumber}:
- *   get:
- *     summary: Get a specific version
- *     parameters:
- *       - in: path
- *         name: versionNumber
- *         required: true
- *         schema:
- *           type: integer
- *         description: Version number to retrieve
- *     responses:
- *       200:
- *         description: Version found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Version'
- *       404:
- *         description: Version not found
- */
-router.get('/:versionNumber', VersionController.getVersion);
-
-/**
- * @swagger
- * /api/versions:
+ *                 type: object
+ *                 properties:
+ *                   versionNumber:
+ *                     type: number
+ *                   components:
+ *                     type: object
+ *                   timestamp:
+ *                     type: string
+ *                   url:
+ *                     type: string
  *   post:
- *     summary: Create a new version
+ *     tags: [Versions]
+ *     summary: Save a new version
+ *     description: Save a new landing page version with components
  *     requestBody:
  *       required: true
  *       content:
@@ -102,28 +45,80 @@ router.get('/:versionNumber', VersionController.getVersion);
  *             properties:
  *               components:
  *                 type: object
- *                 properties:
- *                   navbar:
- *                     $ref: '#/components/schemas/ComponentState'
- *                   hero:
- *                     $ref: '#/components/schemas/ComponentState'
- *                   features:
- *                     $ref: '#/components/schemas/ComponentState'
- *                   contactForm:
- *                     $ref: '#/components/schemas/ComponentState'
- *                   footer:
- *                     $ref: '#/components/schemas/ComponentState'
  *     responses:
  *       201:
- *         description: Version created successfully
+ *         description: Version successfully created
+ * 
+ * /api/versions/{versionNumber}:
+ *   get:
+ *     tags: [Versions]
+ *     summary: Get specific version
+ *     description: Retrieve a specific landing page version by its number
+ *     parameters:
+ *       - in: path
+ *         name: versionNumber
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Numeric ID of the version to get
+ *     responses:
+ *       200:
+ *         description: The requested version
+ *       404:
+ *         description: Version not found
+ * 
+ * /api/versions/pages:
+ *   post:
+ *     tags: [Pages]
+ *     summary: Save a new page
+ *     description: Save a landing page with a unique name
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - components
+ *               - pageName
+ *             properties:
+ *               components:
+ *                 type: object
+ *               pageName:
+ *                 type: string
+ *                 description: Unique name for the page
+ *     responses:
+ *       201:
+ *         description: Page successfully saved
+ *       400:
+ *         description: Invalid request or page name already exists
+ * 
+ *   get:
+ *     tags: [Pages]
+ *     summary: Get all saved pages
+ *     description: Retrieve all saved landing pages
+ *     responses:
+ *       200:
+ *         description: A list of saved pages
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Version'
- *       400:
- *         description: Invalid request body
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   versionNumber:
+ *                     type: number
+ *                   components:
+ *                     type: object
+ *                   pageName:
+ *                     type: string
+ *                   url:
+ *                     type: string
+ *                   timestamp:
+ *                     type: string
  */
+
+router.get('/:versionNumber', VersionController.getVersion);
 router.post('/', VersionController.createVersion);
-
 export { router as versionRoutes };
-
