@@ -20,6 +20,14 @@ const VersionSchema = new Schema({
   url: {
     type: String,
     required: true
+  },
+  pageName: {
+    type: String,
+    required: false
+  },
+  isPage: {
+    type: Boolean,
+    default: false
   }
 });
 

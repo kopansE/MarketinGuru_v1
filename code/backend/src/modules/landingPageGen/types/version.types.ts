@@ -20,4 +20,6 @@ export interface IComponentState {
     components: IVersionComponents;
     timestamp: Date;
     url: string;
+    pageName?: string;  // Added for page saving
+    isPage: boolean;    // To distinguish between versions and saved pages
   }
