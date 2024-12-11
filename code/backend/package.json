@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/bigquery": "^7.9.1",
+    "@google-cloud/bigquery-connection": "^3.3.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
     "body-parser": "^1.20.3",
