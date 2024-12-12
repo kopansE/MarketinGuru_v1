@@ -7,6 +7,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import swaggerOptions from './config/swagger';
 import { versionRoutes } from './modules/landingPageGen/routes/version.routes';
+import {insertRows, queryBigQuery} from "./modules/BigQuery/ConnectionManager";
+
 
 // Load environment variables
 dotenv.config();
