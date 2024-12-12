@@ -3,8 +3,8 @@ const { BigQuery } = require('@google-cloud/bigquery');
 
 // Set up your BigQuery client
 const bigquery = new BigQuery({
-    keyFilename: './robotic-flash-444312-p6-8f8894f1429f.json', // Replace with the path to your JSON key file
-    projectId: 'robotic-flash-444312', // Replace with your project ID
+    keyFilename: './BigQueryKey.json', // Replace with the path to your JSON key file
+    //projectId: 'robotic-flash-444312-p6', // Replace with your project ID
 });
 
 // Define the row type based on your schema
@@ -16,7 +16,7 @@ export async function queryBigQuery() {
     // Your SQL query
     const query = `
     SELECT User_Id, Permission_Type
-    FROM \`robotic-flash-444312.1.UserPermissions\` 
+    FROM \`robotic-flash-444312-p6.1.UserPermissions\` 
     LIMIT 10
   `;
 
@@ -41,12 +41,10 @@ export async function insertRows() {
 
     try {
         // Insert rows into the table
-        await bigquery.dataset("robotic-flash-444312-p6.1").table("UserPermissions").insert(rows);
+        await bigquery.dataset("1").table("UserPermissions").insert(rows);
         console.log(`Inserted ${rows.length} rows successfully.`);
     } catch (error) {
+        //console.log("error");
         console.error('Error inserting rows:', error);
     }
 }
-
-// Run the query function
-queryBigQuery().catch(console.error);
